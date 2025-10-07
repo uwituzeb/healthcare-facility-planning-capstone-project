@@ -6,6 +6,7 @@ This project aims to create an ML-driven web application to guide policymakers i
 
 ## Useful Links
 
+- [Initial Project Demo](https://drive.google.com/drive/folders/1QuFkSdhaahjhSNORI3h6Uj6ww63RIv6k?usp=sharing)
 - [Google Colab](https://colab.research.google.com/drive/14DFmzp2NZUoD-YDjNYutxfCC8dWomqqi?usp=sharing)
 - [Research Proposal](https://docs.google.com/document/d/1oD9Z0VMz-l0DHpFxPu1oSyIhshzPu5Mk/edit?usp=sharing&ouid=105607031437751611507&rtpof=true&sd=true)
 - [Github Link](https://github.com/uwituzeb/healthcare-facility-planning-capstone-project)
