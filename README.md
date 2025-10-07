@@ -40,6 +40,8 @@ source venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
+4. Run the cells to load sentinel-2 data, perform K-Means clustering and visualizations
+
 ## Data
 
 - **Source**: Sentinel-2 imagery (2025-01-01 to 2025-09-30) from Google Earth Engine.
