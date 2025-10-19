@@ -39,12 +39,21 @@ module.exports = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          signup: "#ffffff2b", // custom card background for signup page
+        },
+        signup: {
+          primaryBg: "#0077b6", // page background
+          button: "#00acff", // signup button
+          buttonHover: "#0099e6",
+          inputBg: "#ffffff4c", // input background
         },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        signupCardLeft: "30px 0 0 30px",
+        signupCardRight: "0 30px 30px 0",
       },
       fontFamily: {
         sans: [
@@ -56,6 +65,16 @@ module.exports = {
           '"Segoe UI Symbol"',
           '"Noto Color Emoji"',
         ],
+        jost: ["Jost", "Helvetica", "sans-serif"], // added custom font
+        anek: ["Anek Telugu", "sans-serif"],
+        outfit: ["Outfit", "sans-serif"],
+      },
+      backdropBlur: {
+        sm: "2px",
+        md: "5px",
+      },
+      backdropBrightness: {
+        100: "100%",
       },
       keyframes: {
         "accordion-down": {

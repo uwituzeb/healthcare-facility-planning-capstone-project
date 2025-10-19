@@ -7,7 +7,9 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
-import { LandingPage } from './components/landingPage/landingPage';
+import LandingPage from './components/landingPage/landingPage';
+import SignUpPage from './components/SignupPage/signupPage';
+import LoginPage from './components/loginPage/loginPage';
 
 function App() {
   return (
@@ -15,6 +17,9 @@ function App() {
       <Routes>
         <Route path='/' element={<LandingPage />} />
         <Route path='*' element={<Navigate to='/' replace />} />
+        <Route path='/signup' element={<SignUpPage />} />
+        <Route path='/login' element={<LoginPage />} />
+
       </Routes>
     </Router>
   );

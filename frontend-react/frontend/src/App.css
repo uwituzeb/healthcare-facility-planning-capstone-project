@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===================== COMPONENTS ===================== */
 @layer components {
   .all-\[unset\] {
     all: unset;
   }
 }
 
+/* ===================== ANIMATIONS ===================== */
 :root {
   --animate-spin: spin 1s linear infinite;
 }
@@ -43,82 +45,37 @@
 }
 
 @keyframes image-glow {
-  0% {
-    opacity: 0;
-    animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
-  }
-
-  10% {
-    opacity: 0.7;
-    animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
-  }
-
-  to {
-    opacity: 0.4;
-  }
+  0% { opacity: 0; animation-timing-function: cubic-bezier(0.74,0.25,0.76,1);}
+  10% { opacity: 0.7; animation-timing-function: cubic-bezier(0.12,0.01,0.08,0.99);}
+  to { opacity: 0.4; }
 }
 
 @keyframes fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  0% { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes fade-up {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  0% { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes shimmer {
-  0%,
-  90%,
-  to {
-    background-position: calc(-100% - var(--shimmer-width)) 0;
-  }
-
-  30%,
-  60% {
-    background-position: calc(100% + var(--shimmer-width)) 0;
-  }
+  0%, 90%, to { background-position: calc(-100% - var(--shimmer-width)) 0; }
+  30%, 60% { background-position: calc(100% + var(--shimmer-width)) 0; }
 }
 
 @keyframes marquee {
-  0% {
-    transform: translate(0);
-  }
-
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
-  }
+  0% { transform: translate(0); }
+  to { transform: translateX(calc(-100% - var(--gap))); }
 }
 
 @keyframes marquee-vertical {
-  0% {
-    transform: translateY(0);
-  }
-
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
-  }
+  0% { transform: translateY(0); }
+  to { transform: translateY(calc(-100% - var(--gap))); }
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* ===================== BASE VARIABLES ===================== */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -151,6 +108,13 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+    /* ===================== SIGNUP PAGE VARIABLES ===================== */
+    --signup-bg: #0077b6;
+    --signup-card: #ffffff2b;
+    --signup-input-bg: #ffffff4c;
+    --signup-button: #00acff;
+    --signup-button-hover: #0099e6;
   }
 
   .dark {
@@ -182,18 +146,33 @@
     --destructive-foreground: 210 40% 98%;
 
     --ring: 216 34% 17%;
-
     --radius: 0.5rem;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
 
   body {
+    @apply font-jost;
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* ===================== SIGNUP PAGE COMPONENTS ===================== */
+@layer components {
+  .signup-card {
+    @apply bg-[var(--signup-card)] rounded-lg backdrop-blur-md backdrop-brightness-[100%] border border-white;
+  }
+
+  .signup-input {
+    @apply bg-[var(--signup-input-bg)] rounded-sm border border-white placeholder-white text-white px-4 py-2;
+    font-family: 'Jost', Helvetica, sans-serif;
+  }
+
+  .signup-button {
+    @apply bg-[var(--signup-button)] hover:bg-[var(--signup-button-hover)] rounded-sm text-white px-4 py-2 font-medium;
+    font-family: 'Jost', Helvetica, sans-serif;
   }
 }
