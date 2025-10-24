@@ -1,9 +1,82 @@
-import React from "react";
+import React, { useState } from "react";
 import { SignupButton } from "../SignupButton";
 import { Card, CardContent } from "../card";
 import { Input } from "../input";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  'https://huzuflairsstuoenodep.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1enVmbGFpcnNzdHVvZW5vZGVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyOTI1NzMsImV4cCI6MjA3Njg2ODU3M30._D17czIKkYSOYEe6-kqV8HKSGKRm3jLLgXWgFYUyIIE'
+);
+
 
 const SignUpPage = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      // Validate all fields are filled
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.role) {
+        setMessage({ type: 'error', text: 'Please fill in all fields' });
+        setLoading(false);
+        return;
+      }
+
+      // Submit signup request for approval
+      const { data, error } = await supabase
+        .from('signup_requests')
+        .insert([
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            role: formData.role
+          }
+        ])
+        .select();
+
+      if (error) {
+        if (error.code === '23505') { // Unique constraint violation
+          setMessage({ 
+            type: 'error', 
+            text: 'This email has already been registered. Please check your email for approval status.' 
+          });
+        } else {
+          setMessage({ type: 'error', text: error.message });
+        }
+      } else {
+        setMessage({ 
+          type: 'success', 
+          text: 'Sign up request submitted! You will receive an email once your account is approved by an administrator.' 
+        });
+        // Clear form
+        setFormData({ firstName: '', lastName: '', email: '', role: '' });
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: 'An unexpected error occurred. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-[#0077b6]">
       <div className="flex gap-[5px]">
@@ -33,43 +106,80 @@ const SignUpPage = () => {
                 </h2>
               </div>
 
-              <div className="flex flex-col items-center gap-[15px] w-full">
+              <form onSubmit={handleSignUp} className="flex flex-col items-center gap-[15px] w-full">
+              {message.text && (
+  <div className={`w-full rounded-lg p-3 ${
+    message.type === 'success' 
+      ? 'bg-green-500/20 border border-green-500' 
+      : 'bg-red-500/20 border border-red-500'
+  }`}>
+    <p className="text-white text-xs">
+      {message.text}
+    </p>
+  </div>
+)}
+
                 <div className="flex flex-col items-center gap-7 w-full">
                   <div className="flex flex-col items-start gap-[31px] w-full">
                     <div className="flex flex-col items-start gap-2 w-full">
                       <Input
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
                         placeholder="First name"
+                        required
                         className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] placeholder:text-white h-auto px-[15px] py-2.5"
                       />
 
                       <Input
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
                         placeholder="Last Name"
+                        required
                         className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] placeholder:text-white h-auto px-[15px] py-2.5"
                       />
 
                       <Input
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
                         placeholder="Email"
                         type="email"
+                        required
                         className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] placeholder:text-white h-auto px-[15px] py-2.5"
                       />
 
-                      <Input
-                        placeholder="Role"
-                        className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] placeholder:text-white h-auto px-[15px] py-2.5"
-                      />
+                      <select
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] h-auto px-[15px] py-2.5"
+                      >
+                        <option value="" className="bg-[#0077b6]">Select Role</option>
+                        <option value="policymaker" className="bg-[#0077b6]">Policymaker</option>
+                        <option value="healthcare_professional" className="bg-[#0077b6]">Healthcare Professional</option>
+                        <option value="researcher" className="bg-[#0077b6]">Researcher</option>
+                      </select>
                     </div>
 
-                    <SignupButton className="w-full bg-[#00acff] rounded-[5px] backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-medium text-white text-sm tracking-[0] leading-[normal] h-auto px-[15px] py-2.5 hover:bg-[#0099e6]">
-                      Sign up
+                    <SignupButton
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-[#00acff] rounded-[5px] backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-medium text-white text-sm tracking-[0] leading-[normal] h-auto px-[15px] py-2.5 hover:bg-[#0099e6]"
+                    >
+                      {loading ? 'Submitting...' : 'Sign up'}
                     </SignupButton>
                   </div>
                 </div>
 
                 <p className="w-full [font-family:'Jost',Helvetica] font-normal text-white text-sm text-center tracking-[0] leading-[normal]">
-                  Don&apos;t have an account?{" "}
+                  Already have an account?{" "}
                   <span className="font-bold cursor-pointer">Sign in</span>
                 </p>
-              </div>
+              </form>
+
             </div>
           </CardContent>
         </Card>

@@ -1,9 +1,112 @@
-import React from "react";
+import React, { useState } from "react";
 import { SignupButton } from "../SignupButton";
 import { Card, CardContent } from "../card";
 import { Input } from "../input";
+import { supabase } from "../../lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
 const LoginPage = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      // Attempt to sign in
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (error) {
+        // Check if it's an invalid credentials error
+        if (error.message.includes('Invalid login credentials')) {
+          // Check if user has a pending request
+          const { data: pendingRequest } = await supabase
+            .from('signup_requests')
+            .select('status')
+            .eq('email', formData.email)
+            .single();
+
+          if (pendingRequest) {
+            if (pendingRequest.status === 'pending') {
+              setMessage({ 
+                type: 'error', 
+                text: 'Your account is pending approval. Please wait for an administrator to approve your request.' 
+              });
+            } else if (pendingRequest.status === 'rejected') {
+              setMessage({ 
+                type: 'error', 
+                text: 'Your signup request was rejected. Please contact support.' 
+              });
+            } else {
+              setMessage({ 
+                type: 'error', 
+                text: 'Please check your email for a password setup link.' 
+              });
+            }
+          } else {
+            setMessage({ type: 'error', text: 'Invalid email or password' });
+          }
+        } else {
+          setMessage({ type: 'error', text: error.message });
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Check if user profile exists and is approved
+      const { data: profile, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        await supabase.auth.signOut();
+        setMessage({ 
+          type: 'error', 
+          text: 'Account not found. Please contact support.' 
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (profile.approval_status !== 'approved') {
+        await supabase.auth.signOut();
+        setMessage({ 
+          type: 'error', 
+          text: 'Your account is not approved yet.' 
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Success - redirect to dashboard
+      setMessage({ type: 'success', text: 'Login successful!' });
+      // Redirect to your dashboard
+      window.location.href = '/dashboard';
+
+    } catch (err) {
+      setMessage({ type: 'error', text: 'An unexpected error occurred.' });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-[var(--signup-bg)]">
       <div className="flex gap-[5px]">
@@ -32,32 +135,58 @@ const LoginPage = () => {
                 </h2>
               </div>
 
-              <div className="flex flex-col items-center gap-[15px] w-full">
+              <form onSubmit={handleSignIn} className="flex flex-col items-center gap-[15px] w-full">
+              {message.text && (
+  <div className={`w-full rounded-lg p-3 ${
+    message.type === 'success' 
+      ? 'bg-green-500/20 border border-green-500' 
+      : 'bg-red-500/20 border border-red-500'
+  }`}>
+    <p className="text-white text-xs">
+      {message.text}
+    </p>
+  </div>
+)}
+
                 <div className="flex flex-col items-center gap-7 w-full">
                   <div className="flex flex-col items-start gap-[31px] w-full">
                     <div className="flex flex-col items-start gap-2 w-full">
                       <Input
-                        placeholder="Username"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        required
                         className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] placeholder:text-white h-auto px-[15px] py-2.5"
                       />
                       <Input
-                        placeholder="Password"
+                        name="password"
                         type="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                        required
                         className="w-full bg-[#ffffff4c] rounded-[5px] border border-white backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-normal text-white text-sm tracking-[0] leading-[normal] placeholder:text-white h-auto px-[15px] py-2.5"
                       />
                     </div>
-
-                    <SignupButton className="w-full bg-[#00acff] rounded-[5px] backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-medium text-white text-sm tracking-[0] leading-[normal] h-auto px-[15px] py-2.5 hover:bg-[#0099e6]">
-                      Sign In
+                    <SignupButton
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-[#00acff] rounded-[5px] backdrop-blur-[2px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(2px)_brightness(100%)] [font-family:'Jost',Helvetica] font-medium text-white text-sm tracking-[0] leading-[normal] h-auto px-[15px] py-2.5 hover:bg-[#0099e6]"
+                    >
+                      {loading ? 'Signing in...' : 'Sign In'}
                     </SignupButton>
                   </div>
                 </div>
 
                 <p className="w-full font-jost font-normal text-white text-sm text-center tracking-[0] leading-[normal]">
                   Don't have an account?{" "}
-                  <span className="font-bold cursor-pointer">Sign up</span>
+                  <span className="font-bold cursor-pointer" onClick={() => window.location.href = '/signup'}>
+                    Sign up
+                  </span>
                 </p>
-              </div>
+              </form>
             </div>
           </CardContent>
         </Card>
