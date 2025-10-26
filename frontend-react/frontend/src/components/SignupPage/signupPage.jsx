@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { SignupButton } from "../SignupButton";
 import { Card, CardContent } from "../card";
 import { Input } from "../input";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
-  'https://huzuflairsstuoenodep.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1enVmbGFpcnNzdHVvZW5vZGVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyOTI1NzMsImV4cCI6MjA3Njg2ODU3M30._D17czIKkYSOYEe6-kqV8HKSGKRm3jLLgXWgFYUyIIE'
+  process.env.REACT_APP_SUPABASE_URL,
+  process.env.REACT_APP_SUPABASE_ANON_KEY,
 );
 
 
@@ -31,6 +31,8 @@ const SignUpPage = () => {
     e.preventDefault();
     setLoading(true);
     setMessage({ type: '', text: '' });
+
+    
 
     try {
       // Validate all fields are filled
