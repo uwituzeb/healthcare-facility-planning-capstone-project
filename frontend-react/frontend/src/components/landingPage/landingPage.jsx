@@ -27,17 +27,17 @@ const LandingPage = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <h1 className="font-anek font-medium text-white text-5xl sm:text-6xl lg:text-7xl leading-tight">
+              <h1 className="font-anek font-medium text-white text-4xl sm:text-5xl lg:text-6xl leading-tight">
                 Optimize Healthcare Access
               </h1>
 
-              <p className="font-outfit text-white text-xl sm:text-2xl leading-relaxed">
+              <p className="font-outfit text-white text-xl leading-relaxed">
                 Enhance accessibility and plan healthcare facility placement
                 with AI-powered satellite analysis.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button onClick={() => navigate("/signup")} className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white px-8 py-6 text-lg h-auto rounded-lg transition-all duration-300">
+                <Button onClick={() => navigate("/signup")} className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white px-8 py-4 text-lg h-auto rounded-lg transition-all duration-300">
                   Get Started
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>

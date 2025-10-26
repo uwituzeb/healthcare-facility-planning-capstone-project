@@ -5,25 +5,25 @@ const steps = [
     number: "01",
     title: "Data Collection",
     description:
-      "Gather satellite imagery, demographic data, and existing healthcare facility information from multiple sources.",
+      "Gather satellite imagery, demographic data, and existing healthcare facility information from multiple sources",
   },
   {
     number: "02",
-    title: "AI Analysis",
+    title: "ML Analysis",
     description:
-      "Our advanced algorithms process the data to identify patterns, gaps, and opportunities in healthcare access.",
+      "Our advanced algorithms process the data to identify patterns, gaps, and opportunities in healthcare access",
   },
   {
     number: "03",
     title: "Strategic Planning",
     description:
-      "Generate comprehensive reports with actionable recommendations for optimal facility placement.",
+      "Generate comprehensive reports with actionable recommendations for optimal facility placement",
   },
   {
     number: "04",
     title: "Implementation Support",
     description:
-      "Ongoing monitoring and optimization to ensure maximum impact and community benefit.",
+      "Ongoing monitoring and optimization to ensure maximum impact and community benefit",
   },
 ];
 
@@ -36,8 +36,8 @@ export const HowItWorks = () => {
             How It Works
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Our streamlined process transforms complex data into actionable
-            healthcare infrastructure insights.
+            Our streamlined process transforms data into actionable
+            healthcare facility placement insights
           </p>
         </div>
 

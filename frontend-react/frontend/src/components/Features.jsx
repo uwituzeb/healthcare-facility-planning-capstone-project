@@ -4,27 +4,27 @@ import { Satellite, MapPin, Brain, TrendingUp } from "lucide-react";
 const features = [
   {
     icon: Satellite,
-    title: "Satellite Analysis",
+    title: "Satellite Imagery Analysis",
     description:
-      "Advanced satellite imagery processing to identify underserved areas and assess infrastructure needs.",
+      "Satellite imagery processing to identify underserved areas and assess infrastructure needs",
   },
   {
     icon: Brain,
-    title: "AI-Powered Insights",
+    title: "ML-Based Insights",
     description:
-      "Machine learning algorithms analyze population density, demographics, and existing healthcare access.",
+      "Machine learning algorithms analyze population density, road networks, and existing healthcare access",
   },
   {
     icon: MapPin,
     title: "Optimal Location Planning",
     description:
-      "Data-driven recommendations for new healthcare facility locations to maximize community impact.",
+      "Data-driven recommendations for new healthcare facility locations to maximize community impact",
   },
   {
     icon: TrendingUp,
     title: "Predictive Analytics",
     description:
-      "Forecast future healthcare demands and plan infrastructure accordingly with predictive models.",
+      "Forecast future healthcare demands and plan infrastructure accordingly with predictive models",
   },
 ];
 
@@ -37,8 +37,8 @@ export const Features = () => {
             Powerful Features for Healthcare Planning
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Leverage cutting-edge technology to make informed decisions about
-            healthcare infrastructure placement.
+            Leverage cutting-edge technology to make data-backed decisions about
+            healthcare facility placement
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export const Features = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 flex items-center justify-center">
                   {feature.description}
                 </p>
               </div>
