@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { Search, Check, X } from 'lucide-react';
+import { Search, Check, X, LogOut } from 'lucide-react';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.REACT_APP_SUPABASE_ANON_KEY
 );
+
 
 const AdminDashboard = () => {
   const [requests, setRequests] = useState([]);
@@ -71,44 +72,42 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Error logging out:', error);
+      alert('Error logging out: ' + error.message);
+    }
+  };
+
   const handleApprove = async (request) => {
     try {
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: request.email,
-        email_confirm: true,
-        user_metadata: {
-          first_name: request.first_name,
-          last_name: request.last_name
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('No active session');
+      }
+
+      // Call the Edge Function to approve the user
+      const { data, error } = await supabase.functions.invoke('approve-user', {
+        body: { requestId: request.id },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
         }
       });
 
-      if (authError) throw authError;
+      if (error) throw error;
 
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .insert({
-          id: authData.user.id,
-          first_name: request.first_name,
-          last_name: request.last_name,
-          email: request.email,
-          role: request.role,
-          approval_status: 'approved',
-          approved_at: new Date().toISOString()
-        });
+      if (data.error) {
+        throw new Error(data.error);
+      }
 
-      if (profileError) throw profileError;
-
-      const { error: updateError } = await supabase
-        .from('signup_requests')
-        .update({ 
-          status: 'approved',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', request.id);
-
-      if (updateError) throw updateError;
-
-      alert('User approved successfully! They will receive a password reset email.');
+      alert('User approved successfully! They will receive an email to set their password.');
       fetchRequests();
     } catch (error) {
       console.error('Error approving user:', error);
@@ -169,8 +168,12 @@ const AdminDashboard = () => {
       <div className="bg-white border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-cyan-600">HealthAccess</h1>
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">
-            Customize
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
           </button>
         </div>
       </div>
@@ -231,7 +234,7 @@ const AdminDashboard = () => {
         {/* Registered Users Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Registered Users</h2>
+            <h2 className="text-sm text-gray-600 uppercase tracking-wide">Registered Users</h2>
           </div>
 
           {/* Search Bar */}
@@ -299,23 +302,31 @@ const AdminDashboard = () => {
                         })}
                       </td>
                       <td className="px-6 py-4">
-                        {request.status === 'pending' && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleApprove(request)}
-                              className="flex items-center gap-1 px-4 py-2 bg-cyan-500 text-white rounded-lg text-sm font-medium hover:bg-cyan-600 transition-colors"
-                            >
-                              <Check className="w-4 h-4" />
-                              Approve
-                            </button>
-                            <button
-                              onClick={() => handleReject(request.id)}
-                              className="px-4 py-2 border border-red-400 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors"
-                            >
-                              Decline
-                            </button>
-                          </div>
-                        )}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleApprove(request)}
+                            disabled={request.status !== 'pending'}
+                            className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                              request.status === 'pending'
+                                ? 'bg-cyan-500 text-white hover:bg-cyan-600 cursor-pointer'
+                                : 'bg-cyan-500 text-white opacity-40 cursor-not-allowed'
+                            }`}
+                          >
+                            <Check className="w-4 h-4" />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleReject(request.id)}
+                            disabled={request.status !== 'pending'}
+                            className={`px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                              request.status === 'pending'
+                                ? 'border-red-400 text-red-600 hover:bg-red-50 cursor-pointer'
+                                : 'border-red-400 text-red-600 opacity-40 cursor-not-allowed'
+                            }`}
+                          >
+                            Decline
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
