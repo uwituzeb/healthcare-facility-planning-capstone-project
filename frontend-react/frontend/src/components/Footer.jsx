@@ -6,7 +6,7 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">HealthAccess AI</h3>
+            <h3 className="text-2xl font-bold mb-4">HealthAccess</h3>
             <p className="text-gray-400 leading-relaxed">
               Transforming healthcare accessibility through AI-powered satellite
               analysis and strategic planning.
@@ -122,8 +122,7 @@ export const Footer = () => {
 
         <div className="border-t border-gray-800 pt-8 text-center">
           <p className="text-gray-400">
-            &copy; {new Date().getFullYear()} HealthAccess AI. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} HealthAccess
           </p>
         </div>
       </div>
