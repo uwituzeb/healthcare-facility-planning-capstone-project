@@ -3,6 +3,7 @@ import { SignupButton } from "../SignupButton";
 import { Card, CardContent } from "../card";
 import { Input } from "../input";
 import { createClient } from '@supabase/supabase-js'
+import { useNavigate } from "react-router-dom";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -11,6 +12,7 @@ const supabase = createClient(
 
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -178,7 +180,7 @@ const SignUpPage = () => {
 
                 <p className="w-full [font-family:'Jost',Helvetica] font-normal text-white text-sm text-center tracking-[0] leading-[normal]">
                   Already have an account?{" "}
-                  <span className="font-bold cursor-pointer">Sign in</span>
+                  <span className="font-bold cursor-pointer" onClick={() => navigate('/login')}>Sign in</span>
                 </p>
               </form>
 

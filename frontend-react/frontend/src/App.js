@@ -15,6 +15,7 @@ import InteractiveMap from './components/interactiveMap';
 import Recommendations from './components/recommendations';
 import Reports from './components/reports';
 import AccessibilityAnalysis from './components/accessibilityAnalysis';
+import AdminDashboard from './components/admin/adminDashboard';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path='/dashboard/map' element={<InteractiveMap/>} />
         <Route path='/dashboard/recommendations' element={<Recommendations/>} />
         <Route path='/dashboard/report' element={<Reports/>} />
+        <Route path='/admin/dashboard' element={<AdminDashboard/>} />
 
       </Routes>
     </Router>

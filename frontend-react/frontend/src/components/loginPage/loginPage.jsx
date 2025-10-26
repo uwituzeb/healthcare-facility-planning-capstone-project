@@ -4,8 +4,10 @@ import { Card, CardContent } from "../card";
 import { Input } from "../input";
 import { supabase } from "../../lib/supabase";
 import { createClient } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -26,14 +28,12 @@ const LoginPage = () => {
     setMessage({ type: '', text: '' });
 
     try {
-      // Attempt to sign in
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
       });
 
       if (error) {
-        // Check if it's an invalid credentials error
         if (error.message.includes('Invalid login credentials')) {
           // Check if user has a pending request
           const { data: pendingRequest } = await supabase
@@ -96,17 +96,24 @@ const LoginPage = () => {
         return;
       }
 
-      // Success - redirect to dashboard
-      setMessage({ type: 'success', text: 'Login successful!' });
-      // Redirect to your dashboard
-      window.location.href = '/dashboard';
+      // Check if user is admin (from metadata or profile)
+      const isAdminFromMetadata = data.user.user_metadata?.is_admin === true;
+      const isAdminFromProfile = profile.is_admin === true;
+
+      // Navigate immediately without showing success message
+      if (isAdminFromMetadata || isAdminFromProfile) {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        navigate('/dashboard/overview', { replace: true });
+      }
 
     } catch (err) {
+      console.error('Login error:', err);
       setMessage({ type: 'error', text: 'An unexpected error occurred.' });
-    } finally {
       setLoading(false);
     }
-  };
+  }
+  
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-[var(--signup-bg)]">
       <div className="flex gap-[5px]">
@@ -118,7 +125,7 @@ const LoginPage = () => {
                   Welcome Back!
                 </h2>
                 <p className="w-full font-jost font-normal text-white text-sm text-center tracking-[0] leading-[normal]">
-                  We're glad to see you again. Log in to access unparalleled
+                  We're glad to see you again. Log in to access
                   insights to revolutionize healthcare delivery.
                 </p>
               </div>
