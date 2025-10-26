@@ -123,7 +123,7 @@ const DashboardOverview = () => {
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-[#004c99] to-[#686d72] rounded-lg p-6 text-white">
         <h1 className="text-3xl font-bold mb-2">
-          Welcome to HealthAccess AI Dashboard
+          Welcome to HealthAccess Dashboard
         </h1>
         <p className="text-white/90">
           Data-driven insights for healthcare facility placement in Rwanda
