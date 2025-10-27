@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Search, Check, X, LogOut } from 'lucide-react';
+import Modal from '../Modal';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -14,6 +15,30 @@ const AdminDashboard = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [modal, setModal] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'success'
+  });
+
+  const showModal = (title, message, type = 'success') => {
+    setModal({
+      isOpen: true,
+      title,
+      message,
+      type
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      isOpen: false,
+      title: '',
+      message: '',
+      type: 'success'
+    });
+  };
 
   useEffect(() => {
     checkAdminStatus();
@@ -107,11 +132,22 @@ const AdminDashboard = () => {
         throw new Error(data.error);
       }
 
-      alert('User approved successfully! They will receive an email to set their password.');
+      showModal(
+        'User Approved!',
+        'User approved successfully! An email has been sent to reset their password.',
+        'success'
+      );
+      
+      // Update the request status locally
+      setTimeout(() => {
+        setRequests(prev => prev.map(r => 
+          r.id === request.id ? { ...r, status: 'approved' } : r
+        ));
+      }, 1000);
       fetchRequests();
     } catch (error) {
       console.error('Error approving user:', error);
-      alert('Error approving user: ' + error.message);
+      showModal('Error', `Error approving user: ${error.message}`, 'error');
     }
   };
 
@@ -127,11 +163,21 @@ const AdminDashboard = () => {
 
       if (error) throw error;
 
-      alert('User request rejected');
-      fetchRequests();
+      showModal(
+        'Request Declined',
+        'User request has been declined.',
+        'error'
+      );
+      
+      // Update the request status locally
+      setTimeout(() => {
+        setRequests(prev => prev.map(r => 
+          r.id === requestId ? { ...r, status: 'rejected' } : r
+        ));
+      }, 1000);
     } catch (error) {
       console.error('Error rejecting user:', error);
-      alert('Error rejecting user: ' + error.message);
+      showModal('Error', `Error rejecting user: ${error.message}`, 'error');
     }
   };
 
@@ -164,6 +210,13 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={closeModal}
+        title={modal.title}
+        message={modal.message}
+        type={modal.type}
+      />
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-8 py-6">
         <div className="flex items-center justify-between">
