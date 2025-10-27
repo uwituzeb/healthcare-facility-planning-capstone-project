@@ -10,85 +10,119 @@ import {
 } from "lucide-react";
 
 const DashboardOverview = () => {
-  const stats = [
-    {
-      icon: Building2,
-      label: "Total Healthcare Facilities",
-      value: "1,247",
-      change: "+12%",
-      trend: "up",
-      color: "blue",
-    },
-    {
-      icon: Users,
-      label: "Population Covered",
-      value: "83%",
-      change: "+5%",
-      trend: "up",
-      color: "green",
-    },
-    {
-      icon: Clock,
-      label: "Avg. Travel Time",
-      value: "47 min",
-      change: "-3 min",
-      trend: "down",
-      color: "purple",
-    },
-    {
-      icon: MapPin,
-      label: "Underserved Areas",
-      value: "342",
-      change: "-8%",
-      trend: "down",
-      color: "orange",
-    },
-  ];
+  const [stats, setStats] = useState([]);
+  const [recentAnalysis, setRecentAnalysis] = useState([]);
+  const [priorities, setPriorities] = useState([]);
+  const [hsspTargets, setHsspTargets] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const recentAnalysis = [
-    {
-      region: "Kigali - Gasabo District",
-      status: "Completed",
-      date: "2025-10-20",
-      coverage: "89%",
-    },
-    {
-      region: "Eastern Province - Rwamagana",
-      status: "In Progress",
-      date: "2025-10-22",
-      coverage: "67%",
-    },
-    {
-      region: "Southern Province - Huye",
-      status: "Pending",
-      date: "2025-10-23",
-      coverage: "72%",
-    },
-  ];
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
-  const priorities = [
-    {
-      area: "Northern Province - Gicumbi",
-      population: "145,000",
-      facilities: "8",
-      priority: "High",
-      recommendation: "2 new health centers needed",
-    },
-    {
-      area: "Western Province - Rusizi",
-      population: "98,000",
-      facilities: "12",
-      priority: "Medium",
-      recommendation: "1 hospital upgrade recommended",
-    },
-    {
-      area: "Eastern Province - Kayonza",
-      population: "67,000",
-      facilities: "15",
-      priority: "Low",
-      recommendation: "Current coverage adequate",
-    },
-  ];
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Fetch accessibility data
+      const accessibilityData = await getAccessibilityData();
+      
+      // Fetch predictions
+      const predictionsData = await getPredictions();
+
+      // Update stats
+      setStats([
+        {
+          icon: Building2,
+          label: "Total Healthcare Facilities",
+          value: accessibilityData.stats?.total_facilities || "1,247",
+          change: "+12%",
+          trend: "up",
+          color: "blue",
+        },
+        {
+          icon: Users,
+          label: "Population Covered",
+          value: `${accessibilityData.stats?.population_covered || 83}%`,
+          change: "+5%",
+          trend: "up",
+          color: "green",
+        },
+        {
+          icon: Clock,
+          label: "Avg. Travel Time",
+          value: `${accessibilityData.stats?.avg_travel_time || 47} min`,
+          change: "-3 min",
+          trend: "down",
+          color: "purple",
+        },
+        {
+          icon: MapPin,
+          label: "Underserved Areas",
+          value: accessibilityData.stats?.underserved_areas || "342",
+          change: "-8%",
+          trend: "down",
+          color: "orange",
+        },
+      ]);
+
+      // Update priorities from API data
+      if (accessibilityData.districts) {
+        const highPriorityDistricts = accessibilityData.districts
+          .filter(d => d.priority === 'High')
+          .sort((a, b) => a.accessibility_score - b.accessibility_score)
+          .slice(0, 3);
+
+        setPriorities(highPriorityDistricts.map(d => ({
+          area: d.name,
+          population: "145,000", // You would get this from your backend
+          facilities: "8",
+          priority: d.priority,
+          recommendation: d.accessibility_score < 0.3 
+            ? "2 new health centers needed" 
+            : "1 health center upgrade recommended",
+        })));
+      }
+
+      // Set recent analysis (this could also come from API)
+      setRecentAnalysis([
+        {
+          region: "Kigali - Gasabo District",
+          status: "Completed",
+          date: "2025-10-20",
+          coverage: "89%",
+        },
+        {
+          region: "Eastern Province - Rwamagana",
+          status: "In Progress",
+          date: "2025-10-22",
+          coverage: "67%",
+        },
+        {
+          region: "Southern Province - Huye",
+          status: "Pending",
+          date: "2025-10-23",
+          coverage: "72%",
+        },
+      ]);
+
+      // Set HSSP targets
+      setHsspTargets({
+        universal_coverage: 83,
+        travel_time_25min: 67,
+        facility_modernization: 45,
+        rural_coverage: 72,
+      });
+
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+      setError('Failed to load dashboard data. Please try again.');
+      setLoading(false);
+    }
+  };
 
   const getStatColor = (color) => {
     const colors = {
@@ -117,6 +151,31 @@ const DashboardOverview = () => {
     };
     return colors[status];
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <p className="text-red-800">{error}</p>
+        <button 
+          onClick={fetchDashboardData}
+          className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -221,12 +280,14 @@ const DashboardOverview = () => {
                 <span className="text-sm font-medium text-gray-700">
                   Universal Health Coverage
                 </span>
-                <span className="text-sm font-bold text-gray-900">83%</span>
+                <span className="text-sm font-bold text-gray-900">
+                  {hsspTargets.universal_coverage}%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-green-500 h-2 rounded-full"
-                  style={{ width: "83%" }}
+                  style={{ width: `${hsspTargets.universal_coverage}%` }}
                 ></div>
               </div>
             </div>
@@ -236,12 +297,14 @@ const DashboardOverview = () => {
                 <span className="text-sm font-medium text-gray-700">
                   Travel Time {"<"} 25 minutes
                 </span>
-                <span className="text-sm font-bold text-gray-900">67%</span>
+                <span className="text-sm font-bold text-gray-900">
+                  {hsspTargets.travel_time_25min}%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-500 h-2 rounded-full"
-                  style={{ width: "67%" }}
+                  style={{ width: `${hsspTargets.travel_time_25min}%` }}
                 ></div>
               </div>
             </div>
@@ -251,12 +314,14 @@ const DashboardOverview = () => {
                 <span className="text-sm font-medium text-gray-700">
                   Facility Modernization
                 </span>
-                <span className="text-sm font-bold text-gray-900">45%</span>
+                <span className="text-sm font-bold text-gray-900">
+                  {hsspTargets.facility_modernization}%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-purple-500 h-2 rounded-full"
-                  style={{ width: "45%" }}
+                  style={{ width: `${hsspTargets.facility_modernization}%` }}
                 ></div>
               </div>
             </div>
@@ -266,12 +331,14 @@ const DashboardOverview = () => {
                 <span className="text-sm font-medium text-gray-700">
                   Rural Coverage
                 </span>
-                <span className="text-sm font-bold text-gray-900">72%</span>
+                <span className="text-sm font-bold text-gray-900">
+                  {hsspTargets.rural_coverage}%
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-orange-500 h-2 rounded-full"
-                  style={{ width: "72%" }}
+                  style={{ width: `${hsspTargets.rural_coverage}%` }}
                 ></div>
               </div>
             </div>
@@ -308,39 +375,47 @@ const DashboardOverview = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {priorities.map((priority, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {priority.area}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {priority.population}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {priority.facilities}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
-                        priority.priority
-                      )}`}
-                    >
-                      {priority.priority}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
-                      {priority.recommendation}
-                    </div>
+              {priorities.length > 0 ? (
+                priorities.map((priority, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {priority.area}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {priority.population}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {priority.facilities}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
+                          priority.priority
+                        )}`}
+                      >
+                        {priority.priority}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900">
+                        {priority.recommendation}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                    No priority areas identified
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
