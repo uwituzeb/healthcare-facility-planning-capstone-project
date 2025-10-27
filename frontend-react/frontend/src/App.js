@@ -16,6 +16,7 @@ import Recommendations from './components/recommendations';
 import Reports from './components/reports';
 import AccessibilityAnalysis from './components/accessibilityAnalysis';
 import AdminDashboard from './components/admin/adminDashboard';
+import SetPasswordPage from './components/loginPage/setupPasswordPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path='*' element={<Navigate to='/' replace />} />
         <Route path='/signup' element={<SignUpPage />} />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/set-password' element={<SetPasswordPage />} />
         <Route path='/dashboard/overview' element={<DashboardOverview/>} />
         <Route path='/dashboard/analysis' element={<AccessibilityAnalysis/>} />
         <Route path='/dashboard/map' element={<InteractiveMap/>} />
