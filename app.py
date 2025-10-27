@@ -1,164 +1,139 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import pickle
+import numpy as np
 import pandas as pd
-import json
-import os
-from datetime import datetime
+from pathlib import Path
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///healthcare_planning.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+CORS(app)  # Enable CORS for React frontend
 
-db = SQLAlchemy(app)
+# Load the trained model
+MODEL_PATH = Path(__file__).parent.parent / 'models' / 'healthcare_model.pkl'
 
-# User model
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(120), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+try:
+    with open(MODEL_PATH, 'rb') as f:
+        model_data = pickle.load(f)
+        model = model_data['model']
+        scaler = model_data['scaler']
+    print("✅ Model loaded successfully")
+except Exception as e:
+    print(f"⚠️ Error loading model: {e}")
+    model = None
+    scaler = None
 
-# Analysis results model
-class AnalysisResult(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    analysis_type = db.Column(db.String(50), nullable=False)
-    results = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-# Routes
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password_hash, password):
-            session['user_id'] = user.id
-            session['username'] = user.username
-            flash('Login successful!', 'success')
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid username or password', 'error')
-    
-    return render_template('login.html')
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        
-        # Check if user already exists
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists', 'error')
-            return render_template('signup.html')
-        
-        if User.query.filter_by(email=email).first():
-            flash('Email already exists', 'error')
-            return render_template('signup.html')
-        
-        # Create new user
-        user = User(
-            username=username,
-            email=email,
-            password_hash=generate_password_hash(password)
-        )
-        db.session.add(user)
-        db.session.commit()
-        
-        flash('Account created successfully! Please login.', 'success')
-        return redirect(url_for('login'))
-    
-    return render_template('signup.html')
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('You have been logged out', 'info')
-    return redirect(url_for('index'))
-
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    # Load analysis results for the user
-    results = AnalysisResult.query.filter_by(user_id=session['user_id']).order_by(AnalysisResult.created_at.desc()).all()
-    
-    return render_template('dashboard.html', results=results)
-
-@app.route('/api/accessibility-analysis', methods=['POST'])
-def accessibility_analysis():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-    
-    try:
-        # This would integrate with your ML model
-        # For now, return sample data
-        sample_results = {
-            'underserved_districts': [
-                {'name': 'Nyagatare', 'score': 0.23, 'priority': 'High'},
-                {'name': 'Gatsibo', 'score': 0.31, 'priority': 'High'},
-                {'name': 'Kayonza', 'score': 0.35, 'priority': 'Medium'}
-            ],
-            'recommendations': [
-                'Establish new health centers in Nyagatare district',
-                'Improve road infrastructure in Gatsibo',
-                'Consider mobile health units for remote areas'
-            ],
-            'analysis_date': datetime.utcnow().isoformat()
+# Mock data (replace with actual database queries)
+def get_accessibility_data():
+    """Get accessibility analysis data"""
+    # This should query your actual database or cached analysis results
+    return {
+        "districts": [
+            {"name": "Kigali - Gasabo District", "accessibility_score": 0.89, "priority": "Low"},
+            {"name": "Northern Province - Gicumbi", "accessibility_score": 0.35, "priority": "High"},
+            {"name": "Western Province - Rusizi", "accessibility_score": 0.52, "priority": "Medium"},
+            {"name": "Eastern Province - Rwamagana", "accessibility_score": 0.67, "priority": "Medium"},
+            {"name": "Southern Province - Huye", "accessibility_score": 0.72, "priority": "Low"},
+        ],
+        "stats": {
+            "total_facilities": 1247,
+            "population_covered": 83,
+            "avg_travel_time": 47,
+            "underserved_areas": 342
         }
-        
-        # Save results to database
-        result = AnalysisResult(
-            user_id=session['user_id'],
-            analysis_type='accessibility',
-            results=json.dumps(sample_results)
-        )
-        db.session.add(result)
-        db.session.commit()
-        
-        return jsonify(sample_results)
-    
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    }
 
-@app.route('/api/facility-recommendations', methods=['POST'])
-def facility_recommendations():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-    
+def get_predictions_data():
+    """Get ML predictions for building classification"""
+    return {
+        "healthcare_facilities": 156,
+        "built_up_areas": 2341,
+        "confidence_score": 0.87,
+        "last_updated": "2025-10-20"
+    }
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    return jsonify({"status": "healthy", "model_loaded": model is not None})
+
+@app.route('/api/accessibility', methods=['GET'])
+def get_accessibility():
+    """Get accessibility analysis data"""
+    data = get_accessibility_data()
+    return jsonify(data)
+
+@app.route('/api/predictions', methods=['GET'])
+def get_predictions():
+    """Get ML predictions"""
+    data = get_predictions_data()
+    return jsonify(data)
+
+@app.route('/api/analyze-region', methods=['POST'])
+def analyze_region():
+    """Analyze a specific region"""
     try:
         data = request.get_json()
-        district = data.get('district')
+        region_name = data.get('region')
         
-        # This would integrate with your ML model for facility placement
-        recommendations = {
-            'district': district,
-            'recommended_locations': [
-                {'lat': -1.9441, 'lon': 30.0619, 'type': 'Health Center', 'priority': 'High'},
-                {'lat': -1.9500, 'lon': 30.0700, 'type': 'Clinic', 'priority': 'Medium'}
-            ],
-            'reasoning': f'Based on population density and accessibility analysis for {district}',
-            'estimated_impact': 'Could serve 15,000+ people within 5km radius'
-        }
+        # Here you would process satellite imagery for the region
+        # and run ML predictions
         
-        return jsonify(recommendations)
-    
+        return jsonify({
+            "region": region_name,
+            "accessibility_score": 0.65,
+            "healthcare_facilities": 12,
+            "population": 145000,
+            "recommendation": "2 new health centers needed"
+        })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/api/recommendations', methods=['GET'])
+def get_recommendations():
+    """Get AI-generated recommendations"""
+    district = request.args.get('district', 'all')
+    
+    recommendations = {
+        "immediate_actions": [
+            "Conduct detailed field assessment in Northern Province",
+            "Deploy mobile health units to remote areas",
+            "Strengthen referral systems between districts"
+        ],
+        "strategic_planning": [
+            "Develop 5-year healthcare infrastructure plan",
+            "Implement telemedicine solutions for remote areas",
+            "Improve transportation infrastructure"
+        ],
+        "resource_allocation": [
+            "Prioritize funding for underserved districts",
+            "Train healthcare workers in priority areas",
+            "Upgrade existing facility equipment"
+        ]
+    }
+    
+    return jsonify(recommendations)
+
+@app.route('/api/upload-satellite', methods=['POST'])
+def upload_satellite():
+    """Handle satellite imagery upload and processing"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        # Process the satellite imagery here
+        # Run ML predictions
+        
+        return jsonify({
+            "message": "Image processed successfully",
+            "predictions": {
+                "buildings_detected": 234,
+                "healthcare_facilities": 3,
+                "confidence": 0.85
+            }
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
