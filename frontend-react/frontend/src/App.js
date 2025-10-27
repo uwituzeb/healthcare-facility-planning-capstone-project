@@ -17,6 +17,7 @@ import Reports from './components/reports';
 import AccessibilityAnalysis from './components/accessibilityAnalysis';
 import AdminDashboard from './components/admin/adminDashboard';
 import SetPasswordPage from './components/loginPage/setupPasswordPage';
+import DashboardLayout from './components/dashboards/dashboardLayout';
 
 function App() {
   return (
@@ -27,11 +28,14 @@ function App() {
         <Route path='/signup' element={<SignUpPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/set-password' element={<SetPasswordPage />} />
-        <Route path='/dashboard/overview' element={<DashboardOverview/>} />
-        <Route path='/dashboard/analysis' element={<AccessibilityAnalysis/>} />
-        <Route path='/dashboard/map' element={<InteractiveMap/>} />
-        <Route path='/dashboard/recommendations' element={<Recommendations/>} />
-        <Route path='/dashboard/report' element={<Reports/>} />
+        <Route path='/dashboard' element={<DashboardLayout />}>
+          <Route index element={<Navigate to='/dashboard/overview' replace />} />
+          <Route path='overview' element={<DashboardOverview />} />
+          <Route path='analysis' element={<AccessibilityAnalysis />} />
+          <Route path='map' element={<InteractiveMap />} />
+          <Route path='recommendations' element={<Recommendations />} />
+          <Route path='reports' element={<Reports />} />
+        </Route>
         <Route path='/admin/dashboard' element={<AdminDashboard/>} />
 
       </Routes>

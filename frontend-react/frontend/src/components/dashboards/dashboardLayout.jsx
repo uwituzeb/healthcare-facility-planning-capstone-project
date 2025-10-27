@@ -22,7 +22,7 @@ const DashboardLayout = () => {
     {
       icon: LayoutDashboard,
       label: "Overview",
-      path: "/dashboard",
+      path: "/dashboard/overview",
     },
     {
       icon: Map,
