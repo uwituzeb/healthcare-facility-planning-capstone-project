@@ -100,10 +100,10 @@ const DashboardLayout = () => {
 
         {/* Footer */}
         <div className="border-t border-gray-200 p-4 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
+          {/* <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
             <Settings className="w-5 h-5 flex-shrink-0" />
             {sidebarOpen && <span>Settings</span>}
-          </button>
+          </button> */}
           <button
             onClick={() => navigate("/")}
             className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"

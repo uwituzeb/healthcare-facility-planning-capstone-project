@@ -1,4 +1,5 @@
-import React from "react";
+// Updated DashboardOverview.jsx with API Integration
+import React, { useState, useEffect } from "react";
 import {
   Users,
   Building2,
@@ -8,6 +9,12 @@ import {
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
+import { 
+  getDashboardStats, 
+  getPriorities, 
+  getRecentAnalysis,
+  getHSSPTargets 
+} from "../services/api";
 
 const DashboardOverview = () => {
   const [stats, setStats] = useState([]);
@@ -26,95 +33,67 @@ const DashboardOverview = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch accessibility data
-      const accessibilityData = await getAccessibilityData();
-      
-      // Fetch predictions
-      const predictionsData = await getPredictions();
-
-      // Update stats
-      setStats([
-        {
-          icon: Building2,
-          label: "Total Healthcare Facilities",
-          value: accessibilityData.stats?.total_facilities || "1,247",
-          change: "+12%",
-          trend: "up",
-          color: "blue",
-        },
-        {
-          icon: Users,
-          label: "Population Covered",
-          value: `${accessibilityData.stats?.population_covered || 83}%`,
-          change: "+5%",
-          trend: "up",
-          color: "green",
-        },
-        {
-          icon: Clock,
-          label: "Avg. Travel Time",
-          value: `${accessibilityData.stats?.avg_travel_time || 47} min`,
-          change: "-3 min",
-          trend: "down",
-          color: "purple",
-        },
-        {
-          icon: MapPin,
-          label: "Underserved Areas",
-          value: accessibilityData.stats?.underserved_areas || "342",
-          change: "-8%",
-          trend: "down",
-          color: "orange",
-        },
+      // Fetch all data in parallel
+      const [statsData, prioritiesData, analysisData, targetsData] = await Promise.all([
+        getDashboardStats(),
+        getPriorities(),
+        getRecentAnalysis(),
+        getHSSPTargets()
       ]);
 
-      // Update priorities from API data
-      if (accessibilityData.districts) {
-        const highPriorityDistricts = accessibilityData.districts
-          .filter(d => d.priority === 'High')
-          .sort((a, b) => a.accessibility_score - b.accessibility_score)
-          .slice(0, 3);
-
-        setPriorities(highPriorityDistricts.map(d => ({
-          area: d.name,
-          population: "145,000", // You would get this from your backend
-          facilities: "8",
-          priority: d.priority,
-          recommendation: d.accessibility_score < 0.3 
-            ? "2 new health centers needed" 
-            : "1 health center upgrade recommended",
-        })));
+      // Process dashboard stats
+      if (statsData.success) {
+        const data = statsData.data;
+        setStats([
+          {
+            icon: Building2,
+            label: "Total Healthcare Facilities",
+            value: data.total_facilities?.toString() || "1,247",
+            change: "+12%",
+            trend: "up",
+            color: "blue",
+          },
+          {
+            icon: Users,
+            label: "Population Covered",
+            value: `${data.population_covered_pct || 83}%`,
+            change: "+5%",
+            trend: "up",
+            color: "green",
+          },
+          {
+            icon: Clock,
+            label: "Avg. Travel Time",
+            value: `${data.avg_travel_time_min || 47} min`,
+            change: "-3 min",
+            trend: "down",
+            color: "purple",
+          },
+          {
+            icon: MapPin,
+            label: "Underserved Districts",
+            value: data.underserved_districts?.toString() || "342",
+            change: "-8%",
+            trend: "down",
+            color: "orange",
+          },
+        ]);
       }
 
-      // Set recent analysis (this could also come from API)
-      setRecentAnalysis([
-        {
-          region: "Kigali - Gasabo District",
-          status: "Completed",
-          date: "2025-10-20",
-          coverage: "89%",
-        },
-        {
-          region: "Eastern Province - Rwamagana",
-          status: "In Progress",
-          date: "2025-10-22",
-          coverage: "67%",
-        },
-        {
-          region: "Southern Province - Huye",
-          status: "Pending",
-          date: "2025-10-23",
-          coverage: "72%",
-        },
-      ]);
+      // Process priorities
+      if (prioritiesData.success) {
+        setPriorities(prioritiesData.data);
+      }
 
-      // Set HSSP targets
-      setHsspTargets({
-        universal_coverage: 83,
-        travel_time_25min: 67,
-        facility_modernization: 45,
-        rural_coverage: 72,
-      });
+      // Process recent analysis
+      if (analysisData.success) {
+        setRecentAnalysis(analysisData.data);
+      }
+
+      // Process HSSP targets
+      if (targetsData.success) {
+        setHsspTargets(targetsData.data);
+      }
 
       setLoading(false);
     } catch (err) {
@@ -136,6 +115,7 @@ const DashboardOverview = () => {
 
   const getPriorityColor = (priority) => {
     const colors = {
+      Critical: "bg-red-100 text-red-800",
       High: "bg-red-100 text-red-800",
       Medium: "bg-yellow-100 text-yellow-800",
       Low: "bg-green-100 text-green-800",
@@ -281,13 +261,13 @@ const DashboardOverview = () => {
                   Universal Health Coverage
                 </span>
                 <span className="text-sm font-bold text-gray-900">
-                  {hsspTargets.universal_coverage}%
+                  {hsspTargets.universal_coverage || 83}%
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-green-500 h-2 rounded-full"
-                  style={{ width: `${hsspTargets.universal_coverage}%` }}
+                  style={{ width: `${hsspTargets.universal_coverage || 83}%` }}
                 ></div>
               </div>
             </div>
@@ -298,13 +278,13 @@ const DashboardOverview = () => {
                   Travel Time {"<"} 25 minutes
                 </span>
                 <span className="text-sm font-bold text-gray-900">
-                  {hsspTargets.travel_time_25min}%
+                  {hsspTargets.travel_time_25min || 67}%
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-500 h-2 rounded-full"
-                  style={{ width: `${hsspTargets.travel_time_25min}%` }}
+                  style={{ width: `${hsspTargets.travel_time_25min || 67}%` }}
                 ></div>
               </div>
             </div>
@@ -315,13 +295,13 @@ const DashboardOverview = () => {
                   Facility Modernization
                 </span>
                 <span className="text-sm font-bold text-gray-900">
-                  {hsspTargets.facility_modernization}%
+                  {hsspTargets.facility_modernization || 45}%
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-purple-500 h-2 rounded-full"
-                  style={{ width: `${hsspTargets.facility_modernization}%` }}
+                  style={{ width: `${hsspTargets.facility_modernization || 45}%` }}
                 ></div>
               </div>
             </div>
@@ -332,13 +312,13 @@ const DashboardOverview = () => {
                   Rural Coverage
                 </span>
                 <span className="text-sm font-bold text-gray-900">
-                  {hsspTargets.rural_coverage}%
+                  {hsspTargets.rural_coverage || 72}%
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-orange-500 h-2 rounded-full"
-                  style={{ width: `${hsspTargets.rural_coverage}%` }}
+                  style={{ width: `${hsspTargets.rural_coverage || 72}%` }}
                 ></div>
               </div>
             </div>
