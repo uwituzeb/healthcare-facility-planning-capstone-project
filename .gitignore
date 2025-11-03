@@ -1,3 +1,65 @@
+# Python
 /venv
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Node
 /node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
 .env
+.env.local
+.env.*.local
+
+# Models (large files - use Git LFS or cloud storage)
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.pth
+!models/README.md
+!models/.gitkeep
+
+# Data files
+data/*.tif
+data/*.tiff
+data/*.geojson
+data/*.shp
+data/*.shx
+data/*.dbf
+data/*.csv
+!data/.gitkeep
+
+# Logs
+logs/*.log
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# GCP credentials
+credentials/*.json
+!credentials/.gitkeep
