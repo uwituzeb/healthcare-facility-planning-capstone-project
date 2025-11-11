@@ -153,7 +153,6 @@ const Reports = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -170,7 +169,6 @@ const Reports = () => {
           </button>
         </div>
 
-        {/* Search and Filter */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -235,7 +233,6 @@ const Reports = () => {
         </div>
       </div>
 
-      {/* Reports List */}
       <div className="space-y-4">
         {filteredReports.map((report) => (
           <div
@@ -313,7 +310,6 @@ const Reports = () => {
                 </div>
               </div>
 
-              {/* Footer Info */}
               <div className="pt-4 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
                 <span>File size: {report.fileSize}</span>
                 <span>{report.downloads} downloads</span>
@@ -335,7 +331,6 @@ const Reports = () => {
         )}
       </div>
 
-      {/* Generate Report Section */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
         <div className="flex items-start gap-4">
           <div className="bg-white p-3 rounded-lg">

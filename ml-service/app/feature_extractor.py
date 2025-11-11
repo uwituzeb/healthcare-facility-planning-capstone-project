@@ -35,10 +35,11 @@ class FeatureExtractor:
                 self.gee_initialized = False
 
     def _initialize_gee(self) -> None:
+        project_id = "rwanda-health-planning"
         """Initialize and authenticate Google Earth Engine"""
         try:
             # Try to initialize with existing credentials
-            ee.Initialize()
+            ee.Initialize(project=project_id)
             self.gee_initialized = True
             logger.info("✅ Google Earth Engine initialized successfully")
         except Exception as e:
@@ -52,13 +53,13 @@ class FeatureExtractor:
                         email=None,  # Will be read from credentials file
                         key_file=credentials_path
                     )
-                    ee.Initialize(credentials)
+                    ee.Initialize(credentials, project=project_id)
                     self.gee_initialized = True
                     logger.info("✅ Google Earth Engine initialized with service account")
                 else:
                     # Try regular authentication
                     ee.Authenticate()
-                    ee.Initialize()
+                    ee.Initialize(project=project_id)
                     self.gee_initialized = True
                     logger.info("✅ Google Earth Engine initialized with user authentication")
             except Exception as auth_error:

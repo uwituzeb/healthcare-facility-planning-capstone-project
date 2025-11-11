@@ -67,7 +67,7 @@ const SetPasswordPage = () => {
       
       // Redirect to dashboard after 2 seconds
       setTimeout(() => {
-        navigate('/dashboard/overview', { replace: true });
+        navigate('/dashboard/planner', { replace: true });
       }, 2000);
 
     } catch (err) {

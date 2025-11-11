@@ -70,9 +70,7 @@ const InteractiveMap = () => {
 
   return (
     <div className="h-full flex gap-4">
-      {/* Left Sidebar - Controls */}
       <div className="w-80 bg-white rounded-lg shadow-sm border border-gray-200 overflow-y-auto">
-        {/* Search */}
         <div className="p-4 border-b border-gray-200">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -84,7 +82,6 @@ const InteractiveMap = () => {
           </div>
         </div>
 
-        {/* Layers Control */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-2 mb-3">
             <Layers className="w-5 h-5 text-gray-700" />
@@ -156,7 +153,6 @@ const InteractiveMap = () => {
           </select>
         </div>
 
-        {/* Accessibility Legend */}
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 mb-3">
             Accessibility Zones
@@ -204,11 +200,8 @@ const InteractiveMap = () => {
         </div>
       </div>
 
-      {/* Main Map Area */}
       <div className="flex-1 flex flex-col gap-4">
-        {/* Map Container */}
         <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 relative overflow-hidden">
-          {/* Placeholder Map - Replace with actual map library like Leaflet or Mapbox */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
             <div className="text-center">
               <MapPin className="w-16 h-16 text-[#004c99] mx-auto mb-4" />
@@ -222,8 +215,6 @@ const InteractiveMap = () => {
               </p>
             </div>
           </div>
-
-          {/* Map Controls Overlay */}
           <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-2 space-y-2">
             <button className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded">
               +
@@ -233,13 +224,11 @@ const InteractiveMap = () => {
             </button>
           </div>
 
-          {/* Coordinates Display */}
           <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg px-3 py-2 text-xs text-gray-600">
             Lat: -1.9536, Lng: 30.0909
           </div>
         </div>
 
-        {/* Facility Details Panel */}
         {selectedFacility && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-start justify-between mb-4">

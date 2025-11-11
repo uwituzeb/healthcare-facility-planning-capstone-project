@@ -19,44 +19,42 @@ const DashboardLayout = () => {
   const location = useLocation();
 
   const menuItems = [
-    {
-      icon: LayoutDashboard,
-      label: "Overview",
-      path: "/dashboard/overview",
-    },
-    {
-      icon: Map,
-      label: "Interactive Map",
-      path: "/dashboard/map",
-    },
-    {
-      icon: Activity,
-      label: "Accessibility Analysis",
-      path: "/dashboard/analysis",
-    },
+    // {
+    //   icon: LayoutDashboard,
+    //   label: "Overview",
+    //   path: "/dashboard/overview",
+    // },
+    // {
+    //   icon: Map,
+    //   label: "Interactive Map",
+    //   path: "/dashboard/map",
+    // },
+    // {
+    //   icon: Activity,
+    //   label: "Accessibility Analysis",
+    //   path: "/dashboard/analysis",
+    // },
     {
       icon: Lightbulb,
-      label: "AI Recommendations",
+      label: "ML Recommendations",
       path: "/dashboard/planner",
     },
-    {
-      icon: FileText,
-      label: "Reports",
-      path: "/dashboard/reports",
-    },
+    // {
+    //   icon: FileText,
+    //   label: "Reports",
+    //   path: "/dashboard/reports",
+    // },
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "w-64" : "w-20"
         } bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}
       >
-        {/* Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
           {sidebarOpen && (
             <h1 className="text-xl font-bold text-[#004c99]">
@@ -75,7 +73,6 @@ const DashboardLayout = () => {
           </button>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 py-4 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -98,7 +95,6 @@ const DashboardLayout = () => {
           })}
         </nav>
 
-        {/* Footer */}
         <div className="border-t border-gray-200 p-4 space-y-2">
           <button className="w-full flex items-center gap-3 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">
             <Settings className="w-5 h-5 flex-shrink-0" />
@@ -114,9 +110,7 @@ const DashboardLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold text-gray-800">
@@ -133,8 +127,6 @@ const DashboardLayout = () => {
             </div>
           </div>
         </header>
-
-        {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>

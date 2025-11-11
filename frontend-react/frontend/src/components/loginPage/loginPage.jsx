@@ -104,7 +104,7 @@ const LoginPage = () => {
       if (isAdminFromMetadata || isAdminFromProfile) {
         navigate('/admin/dashboard', { replace: true });
       } else {
-        navigate('/dashboard/overview', { replace: true });
+        navigate('/dashboard/planner', { replace: true });
       }
 
     } catch (err) {

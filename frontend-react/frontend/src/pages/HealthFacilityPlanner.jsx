@@ -80,7 +80,7 @@ export default function HealthFacilityPlanner() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Rural Healthcare Facility Planner
+            Healthcare Facility Planner
           </h1>
           <p className="text-gray-600">
             Analyze healthcare accessibility and get AI-powered recommendations for new facility locations

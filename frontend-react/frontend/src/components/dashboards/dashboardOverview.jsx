@@ -183,7 +183,6 @@ const DashboardOverview = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
       <div className="bg-gradient-to-r from-[#004c99] to-[#686d72] rounded-lg p-6 text-white">
         <h1 className="text-3xl font-bold mb-2">
           Welcome to HealthAccess Dashboard
@@ -193,7 +192,6 @@ const DashboardOverview = () => {
         </p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
@@ -233,7 +231,6 @@ const DashboardOverview = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Analysis */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">
@@ -271,7 +268,6 @@ const DashboardOverview = () => {
           </div>
         </div>
 
-        {/* HSSP V Targets Progress */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">
@@ -350,7 +346,6 @@ const DashboardOverview = () => {
         </div>
       </div>
 
-      {/* Priority Areas */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">

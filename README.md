@@ -1,6 +1,6 @@
-# Healthcare Facility Finder
+# HealthAccess
 
-AI-powered healthcare facility planning system for Rwanda using satellite imagery and machine learning.
+ML-powered healthcare facility planning system for Rwanda using satellite imagery and machine learning.
 
 ## Overview
 
@@ -13,28 +13,31 @@ The Healthcare Facility Finder helps policymakers and healthcare professionals i
 
 **Mission:** Support Rwanda's path to Universal Health Coverage (UHC) by 2030 by identifying underserved areas and optimizing facility placement aligned with the Health Sector Strategic Plan V (HSSP V) targets.
 
----
+## Useful Links
+
+- [Initial Project Demo](https://drive.google.com/drive/folders/1QuFkSdhaahjhSNORI3h6Uj6ww63RIv6k?usp=sharing)
+- [Final Project Demo](https://drive.google.com/drive/folders/1InSGp7JT0DwwQj24zwR-4GJ39t2t0rxv?usp=drive_link)
+- [Google Colab](https://colab.research.google.com/drive/14DFmzp2NZUoD-YDjNYutxfCC8dWomqqi?usp=sharing)
+- [Research Proposal](https://docs.google.com/document/d/1oD9Z0VMz-l0DHpFxPu1oSyIhshzPu5Mk/edit?usp=sharing&ouid=105607031437751611507&rtpof=true&sd=true)
+- [Figma Design](https://www.figma.com/design/vpXG6EV3bQxsLMF8JYRGjV/capstone?node-id=0-1&t=Ahrr6lRoqB9Y1dUl-1)
+
 
 ## Quick Start
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-org/healthcare-facility-finder.git
-cd healthcare-facility-finder
+git clone https://github.com/uwituzeb/healthcare-facility-planning-capstone-project.git
+cd healthcare-facility-planning-capstone-project
 
 # 2. Configure environment
 cp .env.template backend/.env
-# Edit backend/.env with your Supabase credentials
-
-# 3. Set up database
-# Run SUPABASE_SETUP.sql in Supabase SQL Editor
 
 # 4. Install dependencies
 cd backend && npm install
 cd ../frontend-react/frontend && npm install
 cd ../../ml-service && pip install -r requirements.txt
 
-# 5. Export ML model (or use dummy)
+# 5. Export ML model 
 python scripts/export_model.py
 
 # 6. Start all services
@@ -71,20 +74,19 @@ open http://localhost:3000
 - Approval-based registration system
 - Admin dashboard for user management
 
----
 
 ## Architecture
 
 ```
 ┌─────────────────┐
-│  Frontend       │  React, Mapbox GL, Tailwind CSS (Port 3000)
-│  (React)        │
+│  Frontend       │  React, Mapbox GL, Tailwind CSS
+│  (ReactJS)        │
 └────────┬────────┘
          │
          ↓
 ┌─────────────────┐
 │  Backend        │  Node.js, Express (Port 8080)
-│  (Express)      │
+│  (NodeJS)      │
 └────┬─────────┬──┘
      │         │
      ↓         ↓
@@ -92,53 +94,47 @@ open http://localhost:3000
 │ ML     │  │  Database    │
 │Service │  │  (Supabase)  │
 │(FastAPI│  │  PostgreSQL  │
-│Port5001│  │  + PostGIS)  │
+│        │  │  + PostGIS)  │
 └────────┘  └──────────────┘
 ```
 
 ### Tech Stack
 
-**Frontend:** React 18, Mapbox GL JS, Tailwind CSS, React Router
+**Frontend:** ReactJS, Tailwind CSS, React Router
 **Backend:** Node.js, Express, Supabase Client
-**ML Service:** Python, FastAPI, scikit-learn, Google Earth Engine
+**ML Service:** Python, FastAPI, Google Earth Engine
 **Database:** Supabase (PostgreSQL + PostGIS)
 
----
 
 ## Project Structure
 
 ```
 healthcare-facility-finder/
-├── backend/                 # Node.js Express API
+├── backend/                # Node.js Express API
 │   ├── routes/             # API endpoints
 │   ├── services/           # Business logic (LLM, ML)
 │   └── lib/                # Utilities
 ├── frontend-react/         # React frontend
 │   └── frontend/
 │       ├── src/
-│       │   ├── components/ # React components
-│       │   ├── lib/        # API client
-│       │   └── pages/      # Route pages
+│       │   ├── components/
+│       │   ├── lib/        
+│       │   └── pages/    
 │       └── public/
-├── ml-service/             # Python ML service
+├── ml-service/       
 │   ├── app/                # FastAPI application
-│   ├── models/             # Trained models (.pkl)
+│   ├── models/             # Trained models
 │   └── requirements.txt
 ├── scripts/                # Utility scripts
 │   ├── start_all_services.sh
 │   ├── train_model.py
 │   ├── export_model.py
 │   └── download_data_simple.py
-├── docs/                   # Documentation
-│   ├── SETUP.md           # Setup guide
-│   ├── ML_GUIDE.md        # ML training guide
-│   ├── ADMIN_GUIDE.md     # Admin guide
-│   └── DATA_DOWNLOAD.md   # Data download guide
 ├── supabase/              # Database migrations
 │   └── migrations/
 ├── .env.template          # Environment template
-├── SUPABASE_SETUP.sql     # Database setup script
-└── README.md              # This file
+├── SUPABASE_SETUP.sql     # Database setup script for supabase
+└── README.md              
 ```
 
 ---
@@ -224,8 +220,6 @@ pip install -r requirements.txt
 python -m app.main  # Port 5001
 ```
 
----
-
 ## Deployment
 
 ### Docker Compose
@@ -272,33 +266,7 @@ Check Supabase credentials in backend/.env
 
 See [docs/SETUP.md](docs/SETUP.md) for more troubleshooting.
 
----
 
-## Useful Links
-
-- [Initial Project Demo](https://drive.google.com/drive/folders/1QuFkSdhaahjhSNORI3h6Uj6ww63RIv6k?usp=sharing)
-- [Final Project Demo](https://drive.google.com/drive/folders/1InSGp7JT0DwwQj24zwR-4GJ39t2t0rxv?usp=drive_link)
-- [Google Colab](https://colab.research.google.com/drive/14DFmzp2NZUoD-YDjNYutxfCC8dWomqqi?usp=sharing)
-- [Research Proposal](https://docs.google.com/document/d/1oD9Z0VMz-l0DHpFxPu1oSyIhshzPu5Mk/edit?usp=sharing&ouid=105607031437751611507&rtpof=true&sd=true)
-- [Figma Design](https://www.figma.com/design/vpXG6EV3bQxsLMF8JYRGjV/capstone?node-id=0-1&t=Ahrr6lRoqB9Y1dUl-1)
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open Pull Request
-
----
-
-## License
-
-This project is licensed under the MIT License.
-
----
 
 ## Acknowledgments
 
@@ -308,7 +276,6 @@ This project is licensed under the MIT License.
 - **Supabase** for backend infrastructure
 - **Mapbox** for mapping visualization
 
----
 
 ## Roadmap
 
@@ -330,8 +297,11 @@ This project is licensed under the MIT License.
 - ⏳ Integration with national health systems
 - ⏳ Automated facility placement optimization
 
----
 
-**Made with ❤️ for improving healthcare accessibility in Rwanda**
+## Contributing
 
-**Last Updated:** 2025-11-10
+1. Fork the repository
+2. Create feature branch: `git checkout -b ft/feature-description`
+3. Commit changes: `git commit -m 'New feature'`
+4. Push to branch: `git push origin ft/feature-description`
+5. Open Pull Request
