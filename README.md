@@ -1,26 +1,22 @@
 # HealthAccess
 
-ML-powered healthcare facility planning system for Rwanda using satellite imagery and machine learning.
-
 ## Overview
 
-HealthAccess helps policymakers and healthcare professionals identify optimal locations for new healthcare facilities by combining:
+ML-powered healthcare facility planning system for Rwanda using satellite imagery and machine learning to support Rwanda's path to Universal Health Coverage (UHC) by 2030 by identifying underserved areas and optimizing facility placement aligned with the Health Sector Strategic Plan V (HSSP V) targets. The web application aims to help policymakers and healthcare professionals identify optimal locations for new healthcare facilities by combining:
 
 - **Satellite Imagery Analysis** (Sentinel-2) - Identifies built-up areas suitable for facilities
 - **Machine Learning** (Random Forest) - Predicts facility suitability with 98.9% accuracy
 - **Geospatial Analysis** (PostGIS) - Analyzes accessibility and travel times
 - **Interactive Mapping** (Mapbox) - Visualizes recommendations and current facilities
 
-**Mission:** Support Rwanda's path to Universal Health Coverage (UHC) by 2030 by identifying underserved areas and optimizing facility placement aligned with the Health Sector Strategic Plan V (HSSP V) targets.
-
 ## Useful Links
 
 - [Initial Project Demo](https://drive.google.com/drive/folders/1QuFkSdhaahjhSNORI3h6Uj6ww63RIv6k?usp=sharing)
 - [Final Project Demo](https://drive.google.com/drive/folders/1InSGp7JT0DwwQj24zwR-4GJ39t2t0rxv?usp=drive_link)
-- [Google Colab](https://colab.research.google.com/drive/14DFmzp2NZUoD-YDjNYutxfCC8dWomqqi?usp=sharing)
+- [Initial Google Colab](https://colab.research.google.com/drive/14DFmzp2NZUoD-YDjNYutxfCC8dWomqqi?usp=sharing)
 - [Research Proposal](https://docs.google.com/document/d/1oD9Z0VMz-l0DHpFxPu1oSyIhshzPu5Mk/edit?usp=sharing&ouid=105607031437751611507&rtpof=true&sd=true)
 - [Figma Design](https://www.figma.com/design/vpXG6EV3bQxsLMF8JYRGjV/capstone?node-id=0-1&t=Ahrr6lRoqB9Y1dUl-1)
-
+- [FastAPI Docs](http://localhost:5001/docs)
 
 ## Quick Start
 
@@ -46,10 +42,6 @@ python scripts/export_model.py
 # 7. Open browser
 open http://localhost:3000
 ```
-
-**See [docs/SETUP.md](docs/SETUP.md) for detailed setup instructions.**
-
----
 
 ## Features
 
@@ -137,17 +129,6 @@ healthcare-facility-finder/
 └── README.md              
 ```
 
----
-
-## Documentation
-
-- **[Setup Guide](docs/SETUP.md)** - Complete installation and configuration
-- **[ML Guide](docs/ML_GUIDE.md)** - Train and deploy ML models
-- **[Admin Guide](docs/ADMIN_GUIDE.md)** - User management and admin features
-- **[Data Download Guide](docs/DATA_DOWNLOAD.md)** - Download satellite imagery
-
----
-
 ## API Endpoints
 
 ### Analysis
@@ -166,8 +147,6 @@ healthcare-facility-finder/
 - `GET /api/health` - Backend health check
 
 **Full API documentation:** [FastAPI Docs](http://localhost:5001/docs) (when ML service running)
-
----
 
 ## ML Model Details
 
@@ -188,8 +167,6 @@ RGB statistics, NDVI (vegetation), Built-up index, Brightness
 - **Precision:** 0.99
 - **Recall:** 0.98
 - **F1-Score:** 0.98
-
-See [docs/ML_GUIDE.md](docs/ML_GUIDE.md) for training instructions.
 
 ---
 
@@ -241,33 +218,6 @@ gcloud run deploy ml-service --source ./ml-service --region us-central1
 gcloud run deploy frontend --source ./frontend-react/frontend --region us-central1
 ```
 
----
-
-## Troubleshooting
-
-### ML Service Not Available
-
-```bash
-curl http://localhost:5001/health
-```
-
-**Solutions:**
-- Ensure ML service is running
-- Verify `ML_ENABLED=true` in backend/.env
-- Check model file: `ls ml-service/models/healthcare_model.pkl`
-
-### Frontend CORS Errors
-
-Verify `REACT_APP_API_URL=http://localhost:8080` in frontend .env
-
-### Database Connection Failed
-
-Check Supabase credentials in backend/.env
-
-See [docs/SETUP.md](docs/SETUP.md) for more troubleshooting.
-
-
-
 ## Acknowledgments
 
 - **Sentinel-2** satellite imagery from ESA Copernicus program
@@ -282,20 +232,19 @@ See [docs/SETUP.md](docs/SETUP.md) for more troubleshooting.
 ### Phase 1 (Current)
 - ✅ ML-powered recommendations
 - ✅ District-level analysis
-- ✅ User authentication
-- ✅ Admin approval system
+- ✅ Admin approval system for security and privacy
 
 ### Phase 2 (Planned)
-- ⏳ Real-time satellite updates
-- ⏳ Multi-country support
-- ⏳ Advanced analytics dashboard
-- ⏳ Mobile app (React Native)
+- Real-time satellite updates
+- Multi-country support
+- Advanced analytics dashboard
+- Mobile app (React Native)
 
 ### Phase 3 (Future)
-- ⏳ Population forecasting
-- ⏳ Cost estimation models
-- ⏳ Integration with national health systems
-- ⏳ Automated facility placement optimization
+- Population forecasting
+- Cost estimation models
+- Integration with national health systems
+- Automated facility placement optimization
 
 
 ## Contributing
