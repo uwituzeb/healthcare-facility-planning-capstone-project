@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Healthcare Facility Finder - Full Stack Startup Script
+# HealthAccess - Full Stack Startup Script
 # =============================================================================
 # This script starts all services in the correct order
 
@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}===============================================================================${NC}"
-echo -e "${BLUE}  Healthcare Facility Finder - Starting All Services${NC}"
+echo -e "${BLUE}  HealthAccess - Starting All Services${NC}"
 echo -e "${BLUE}===============================================================================${NC}"
 echo
 

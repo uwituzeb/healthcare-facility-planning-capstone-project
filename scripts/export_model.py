@@ -23,7 +23,6 @@ def extract_model_from_notebook():
     print("=" * 80)
     print()
 
-    # Try to load from a previously saved model in the notebook
     potential_paths = [
         Path("models/healthcare_model.pkl"),
         Path("../ml-service/models/healthcare_model.pkl"),
@@ -93,9 +92,9 @@ def extract_model_from_notebook():
     print("# Verify export")
     print("file_size_mb = model_file.stat().st_size / (1024 * 1024)")
     print("print(f'\\n✅ MODEL EXPORTED SUCCESSFULLY!')")
-    print("print(f'📁 Location: {model_file.absolute()}')")
-    print("print(f'📊 File size: {file_size_mb:.2f} MB')")
-    print("print(f'🎯 Accuracy: {model_data[\"accuracy\"]:.4f}')")
+    print("print(f'Location: {model_file.absolute()}')")
+    print("print(f'File size: {file_size_mb:.2f} MB')")
+    print("print(f'Accuracy: {model_data[\"accuracy\"]:.4f}')")
     print("```")
     print()
     print("=" * 80)
@@ -106,12 +105,10 @@ def extract_model_from_notebook():
     return None
 
 
-# Dummy model creation removed - use train_model.py instead
-
 
 def main():
     """Main export process"""
-    print("\n🤖 Healthcare Facility Finder - Model Export Tool\n")
+    print("\n🤖 HealthAccess - Model Export Tool\n")
 
     # Try to find existing model
     existing_model = extract_model_from_notebook()

@@ -4,7 +4,7 @@ Guide for setting up and managing the admin approval system for user registratio
 
 ## Overview
 
-The Healthcare Facility Finder uses an approval-based user registration system:
+HealthAccess uses an approval-based user registration system:
 
 1. **Users sign up** → Request goes to `signup_requests` table (status: `pending`)
 2. **Admin reviews** → Admin sees pending requests in dashboard
@@ -272,7 +272,7 @@ In **Supabase Dashboard** → **Settings** → **Auth** → **Email Templates:**
 Edit **Invite User** template:
 
 ```html
-<h2>Welcome to Healthcare Facility Finder!</h2>
+<h2>Welcome to HealthAccess!</h2>
 <p>Your account has been approved. Click below to set your password:</p>
 <a href="{{ .ConfirmationURL }}">Set Password</a>
 ```

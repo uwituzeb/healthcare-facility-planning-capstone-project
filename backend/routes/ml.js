@@ -3,13 +3,10 @@ import fetch from "node-fetch";
 
 const router = express.Router();
 
-// Get ML service URL from environment
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:5001";
 const ML_ENABLED = process.env.ML_ENABLED === "true";
 
-/**
- * Check if ML service is available
- */
+// Check ML service availability
 async function checkMLService() {
   if (!ML_ENABLED) {
     return { available: false, reason: "ML service disabled in configuration" };
@@ -36,9 +33,6 @@ async function checkMLService() {
   }
 }
 
-/**
- * Proxy request to ML service
- */
 async function proxyToMLService(path, method = "GET", body = null) {
   const url = `${ML_SERVICE_URL}${path}`;
 
@@ -69,10 +63,7 @@ async function proxyToMLService(path, method = "GET", body = null) {
   }
 }
 
-/**
- * GET /api/ml/health
- * Check ML service health
- */
+// Check ML service health
 router.get("/health", async (req, res) => {
   try {
     const status = await checkMLService();
@@ -90,10 +81,7 @@ router.get("/health", async (req, res) => {
   }
 });
 
-/**
- * GET /api/ml/model/info
- * Get information about the ML model
- */
+// Get model information
 router.get("/model/info", async (req, res) => {
   try {
     if (!ML_ENABLED) {
@@ -115,10 +103,7 @@ router.get("/model/info", async (req, res) => {
   }
 });
 
-/**
- * POST /api/ml/predict
- * Make prediction from feature vector
- */
+// Make predictions
 router.post("/predict", async (req, res) => {
   try {
     if (!ML_ENABLED) {
@@ -148,10 +133,7 @@ router.post("/predict", async (req, res) => {
   }
 });
 
-/**
- * POST /api/ml/predict-location
- * Make prediction from geographic coordinates
- */
+// Make location-based predictions
 router.post("/predict-location", async (req, res) => {
   try {
     if (!ML_ENABLED) {
@@ -189,10 +171,7 @@ router.post("/predict-location", async (req, res) => {
   }
 });
 
-/**
- * POST /api/ml/predict-batch
- * Make batch predictions
- */
+// Make batch predictions
 router.post("/predict-batch", async (req, res) => {
   try {
     if (!ML_ENABLED) {

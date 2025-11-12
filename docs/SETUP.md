@@ -1,6 +1,6 @@
 # Setup Guide
 
-Complete setup instructions for the Healthcare Facility Finder application.
+Complete setup instructions for the HealthAccess application.
 
 ## Quick Start (5 Minutes)
 
@@ -214,7 +214,7 @@ curl http://localhost:8080/api/ml/health
 
 ### Test Frontend
 
-Open http://localhost:3000 in your browser. You should see the Healthcare Facility Finder home page.
+Open http://localhost:3000 in your browser. You should see the HealthAccess home page.
 
 ---
 

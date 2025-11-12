@@ -3,11 +3,7 @@ import { supabase, supabaseAdmin } from "../lib/supabase.js";
 
 const router = express.Router();
 
-/**
- * Approve a user signup request
- * POST /api/users/approve
- * Body: { requestId: string, adminToken: string }
- */
+// Approve a user signup request
 router.post("/approve", async (req, res) => {
   try {
     const { requestId, adminToken } = req.body;
@@ -53,7 +49,7 @@ router.post("/approve", async (req, res) => {
       });
     }
 
-    // Create the user in Supabase Auth using admin API
+    // Create the user
     if (!supabaseAdmin) {
       return res.status(500).json({
         error: "Admin operations not configured. SUPABASE_SERVICE_ROLE_KEY is required."
@@ -95,7 +91,7 @@ router.post("/approve", async (req, res) => {
       return res.status(500).json({ error: "Failed to update request status" });
     }
 
-    // Create user profile (if the auth user was created)
+    // Create user profile
     if (authData?.user) {
       const { error: profileCreateError } = await supabase
         .from("user_profiles")
@@ -111,7 +107,6 @@ router.post("/approve", async (req, res) => {
 
       if (profileCreateError) {
         console.error("Error creating user profile:", profileCreateError);
-        // Don't fail the request, profile can be created later
       }
     }
 
@@ -126,11 +121,7 @@ router.post("/approve", async (req, res) => {
   }
 });
 
-/**
- * Reject a user signup request
- * POST /api/users/reject
- * Body: { requestId: string, adminToken: string }
- */
+// Reject a user signup request
 router.post("/reject", async (req, res) => {
   try {
     const { requestId, adminToken } = req.body;
@@ -182,11 +173,7 @@ router.post("/reject", async (req, res) => {
   }
 });
 
-/**
- * Get all signup requests (admin only)
- * GET /api/users/requests
- * Headers: Authorization: Bearer <token>
- */
+// Get all signup requests (admin only)
 router.get("/requests", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;

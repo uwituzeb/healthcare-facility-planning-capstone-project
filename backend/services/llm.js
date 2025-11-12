@@ -4,7 +4,7 @@ const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "mistral";
 
 export async function getRecommendation(analysis) {
-  const prompt = `You are an expert health facility planner for Rwanda.
+  const prompt = `As an expert health facility planner for Rwanda.
 
 Given the following district analysis:
 - District: ${analysis.district}

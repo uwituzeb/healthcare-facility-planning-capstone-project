@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-"""
-Download Sentinel-2 and WorldCover data (stays under 50MB limit)
-
-Simple version: Downloads Kigali region which fits under the 50MB limit.
-Perfect for testing and development!
-"""
 
 import ee
 import requests
@@ -87,10 +81,10 @@ def download_kigali():
     if not initialize_ee():
         return 1
 
-    # Kigali bounds (carefully sized to stay under 50MB)
+    # Kigali bounds
     kigali_bounds = ee.Geometry.Rectangle([29.95, -2.05, 30.25, -1.85])
 
-    # Load Sentinel-2
+    # Load Sentinel-2 imagery
     print("Loading Sentinel-2 imagery...")
     sentinel2 = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
                  .filterBounds(kigali_bounds)
@@ -119,19 +113,18 @@ def download_kigali():
     labels_ok = download_image(worldcover, kigali_bounds, labels_path, "WorldCover Labels")
 
     if not labels_ok:
-        print("\n❌ Failed to download WorldCover")
+        print("\nFailed to download WorldCover")
         return 1
 
     # Success!
-    print("\n" + "="*70)
     print("✅ SUCCESS!")
     print("="*70)
     print()
     print(f"✓ sentinel.tif: {sentinel_path.stat().st_size / (1024*1024):.2f}MB")
     print(f"✓ labels.tif: {labels_path.stat().st_size / (1024*1024):.2f}MB")
     print()
-    print("📍 Region: Kigali City")
-    print("🎯 Ready for model training!")
+    print("Region: Kigali City")
+    print("Ready for model training!")
     print()
     print("Next step: python train_model.py")
     print()
@@ -205,10 +198,10 @@ def download_custom_region():
         return 0
 
     except ValueError:
-        print("❌ Invalid coordinates")
+        print("Invalid coordinates")
         return 1
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         return 1
 
 

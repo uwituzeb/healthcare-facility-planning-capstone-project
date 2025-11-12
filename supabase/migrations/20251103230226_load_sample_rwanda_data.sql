@@ -1,15 +1,6 @@
 /*
   # Load Sample Rwanda Districts and Health Facilities
   
-  1. Inserts
-    - 4 sample districts (Eastern Rwanda)
-    - 20+ health facilities with realistic locations
-    - Population cell estimates
-  
-  2. Notes
-    - Using simplified geometries for demo
-    - Coordinates are actual Rwanda locations
-    - Travel times are estimated based on distance
 */
 
 INSERT INTO districts (name, geom, population, area_km2) VALUES

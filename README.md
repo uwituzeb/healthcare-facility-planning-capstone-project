@@ -4,7 +4,7 @@ ML-powered healthcare facility planning system for Rwanda using satellite imager
 
 ## Overview
 
-The Healthcare Facility Finder helps policymakers and healthcare professionals identify optimal locations for new healthcare facilities by combining:
+HealthAccess helps policymakers and healthcare professionals identify optimal locations for new healthcare facilities by combining:
 
 - **Satellite Imagery Analysis** (Sentinel-2) - Identifies built-up areas suitable for facilities
 - **Machine Learning** (Random Forest) - Predicts facility suitability with 98.9% accuracy

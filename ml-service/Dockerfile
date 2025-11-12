@@ -1,5 +1,3 @@
-# Healthcare Facility Finder - ML Service Dockerfile
-
 FROM python:3.10-slim
 
 # Set working directory
@@ -11,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Copy requirements
 COPY requirements.txt .
 
 # Install Python dependencies

@@ -4,7 +4,7 @@ Complete guide for training, exporting, and deploying ML models for healthcare f
 
 ## Overview
 
-The Healthcare Facility Finder uses a Random Forest classifier to identify built-up areas suitable for healthcare facilities using Sentinel-2 satellite imagery. The ML model analyzes 12 spectral features to predict whether a location is suitable for facility placement.
+HealthAccess uses a Random Forest classifier to identify built-up areas suitable for healthcare facilities using Sentinel-2 satellite imagery. The ML model analyzes 12 spectral features to predict whether a location is suitable for facility placement.
 
 ---
 

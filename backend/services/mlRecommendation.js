@@ -3,16 +3,9 @@ import fetch from "node-fetch";
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:5001";
 const ML_ENABLED = process.env.ML_ENABLED === "true";
 
-/**
- * ML-Enhanced Recommendation Service
- *
- * This service integrates ML predictions with LLM recommendations
- * to provide data-driven facility placement suggestions.
- */
 
-/**
- * Check if ML service is available and model is loaded
- */
+// Check if ML service is available and model is loaded
+
 async function checkMLAvailability() {
   if (!ML_ENABLED) {
     throw new Error("ML service is disabled. Set ML_ENABLED=true in environment.");
@@ -40,10 +33,7 @@ async function checkMLAvailability() {
   }
 }
 
-/**
- * Generate candidate locations within district bounds
- * Creates a grid of potential facility locations
- */
+// Generate candidate locations within district bounds
 function generateCandidateLocations(bounds, numCandidates = 20) {
   const { minLat, maxLat, minLon, maxLon } = bounds;
   const candidates = [];
@@ -65,10 +55,7 @@ function generateCandidateLocations(bounds, numCandidates = 20) {
   return candidates;
 }
 
-/**
- * Get ML predictions for candidate locations
- * Uses the ML service to predict built-up areas (suitable for facilities)
- */
+// Get ML predictions for candidate locations
 async function predictCandidateLocations(candidates) {
   const predictions = [];
 
@@ -110,10 +97,7 @@ async function predictCandidateLocations(candidates) {
   return predictions;
 }
 
-/**
- * Select top locations based on ML predictions
- * Prioritizes locations with high probability of built-up areas
- */
+// Prioritizes locations with high probability of built-up areas
 function selectTopLocations(predictions, numLocations = 3) {
   // Filter suitable locations
   const suitableLocations = predictions.filter(p => p.suitable);
@@ -132,9 +116,7 @@ function selectTopLocations(predictions, numLocations = 3) {
   return sorted.slice(0, numLocations);
 }
 
-/**
- * Format recommendations with ML predictions
- */
+// Format ML recommendations into expected output structure
 function formatMLRecommendations(topLocations, analysis) {
   const recommendations = topLocations.map((location, index) => {
     const zones = ["North", "Central", "South", "East", "West"];
@@ -166,11 +148,7 @@ function formatMLRecommendations(topLocations, analysis) {
   };
 }
 
-/**
- * Main ML-enhanced recommendation function
- *
- * This replaces the LLM-only recommendation approach with ML-based predictions
- */
+// This replaces the LLM-only recommendation approach with ML-based predictions
 export async function getMLRecommendation(analysis) {
   console.log("Generating ML-enhanced recommendations...");
 
@@ -207,14 +185,11 @@ export async function getMLRecommendation(analysis) {
 
   } catch (error) {
     console.error("ML Recommendation Error:", error);
-    throw error; // Don't fall back to dummy data - fail explicitly
+    throw error;
   }
 }
 
-/**
- * Validate a proposed location using ML
- * Can be used to check if LLM-suggested locations are suitable
- */
+// Validate a proposed location using ML
 export async function validateLocationWithML(latitude, longitude) {
   try {
     await checkMLAvailability();

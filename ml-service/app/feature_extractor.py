@@ -11,7 +11,7 @@ import os
 
 logger = logging.getLogger(__name__)
 
-# Try to import Google Earth Engine
+# import Google Earth Engine
 try:
     import ee
     GEE_AVAILABLE = True
@@ -38,19 +38,16 @@ class FeatureExtractor:
         project_id = "rwanda-health-planning"
         """Initialize and authenticate Google Earth Engine"""
         try:
-            # Try to initialize with existing credentials
             ee.Initialize(project=project_id)
             self.gee_initialized = True
             logger.info("✅ Google Earth Engine initialized successfully")
         except Exception as e:
-            # Try to authenticate
             logger.info("Attempting GEE authentication...")
             try:
-                # Check for service account credentials
                 credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
                 if credentials_path and os.path.exists(credentials_path):
                     credentials = ee.ServiceAccountCredentials(
-                        email=None,  # Will be read from credentials file
+                        email=None,
                         key_file=credentials_path
                     )
                     ee.Initialize(credentials, project=project_id)
@@ -98,11 +95,7 @@ class FeatureExtractor:
             raise RuntimeError("Google Earth Engine not available")
 
         try:
-            # Create point geometry
             point = ee.Geometry.Point([longitude, latitude])
-
-            # Create region around point (approximate square in meters)
-            # 256 pixels at 10m resolution = 2560m
             buffer_meters = (patch_size * 10) / 2
             region = point.buffer(buffer_meters).bounds()
 

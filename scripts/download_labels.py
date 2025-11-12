@@ -5,8 +5,6 @@ Download ESA WorldCover labels for Rwanda
 This script downloads the ESA WorldCover 2021 land cover classification
 for Rwanda, which is used as training labels for the ML model.
 
-Note: Full Rwanda is too large for direct download (>900MB).
-Use Google Drive export or download a smaller region (like Kigali).
 """
 
 import ee
@@ -84,8 +82,8 @@ def download_kigali_only():
                         print(f"  Progress: {percent:.1f}% ({mb_downloaded:.1f}MB / {mb_total:.1f}MB)", end='\r')
 
         print(f"\n\n✅ SUCCESS!")
-        print(f"📁 Labels saved to: {output_path.absolute()}")
-        print(f"📊 File size: {output_path.stat().st_size / (1024*1024):.2f} MB")
+        print(f"Labels saved to: {output_path.absolute()}")
+        print(f"File size: {output_path.stat().st_size / (1024*1024):.2f} MB")
         print()
         print("You can now run: python train_model.py")
         print()

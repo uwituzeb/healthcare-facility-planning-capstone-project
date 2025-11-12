@@ -11,11 +11,8 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY environment variables");
 }
 
-// Regular client for standard operations
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Admin client with service role key for admin operations (user creation, etc.)
-// Only use this for admin operations that require elevated privileges
 export const supabaseAdmin = supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
@@ -25,6 +22,3 @@ export const supabaseAdmin = supabaseServiceKey
     })
   : null;
 
-if (!supabaseAdmin) {
-  console.warn("⚠️  SUPABASE_SERVICE_ROLE_KEY not configured. Admin operations (user approval) will be limited.");
-}

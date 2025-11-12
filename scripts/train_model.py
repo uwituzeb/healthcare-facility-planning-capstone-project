@@ -1,16 +1,7 @@
 #!/usr/bin/env python3
 """
-Healthcare Facility Finder - Model Training Script
-
 This script trains a Random Forest model to classify healthcare facilities
 and built-up areas from satellite imagery (Sentinel-2).
-
-Usage:
-    python train_model.py
-
-Requirements:
-    - sentinel.tif: Sentinel-2 imagery file in project root
-    - labels.tif: Label data (ESA WorldCover or similar) in project root
 """
 
 import numpy as np
@@ -139,12 +130,11 @@ class ModelTrainer:
         """
         print(f"\nPreparing training data (patch size: {patch_size}x{patch_size}, stride: {stride})...")
 
-        # Convert sentinel to HWC format - USE ALL 4 BANDS (R, G, B, NIR)
-        if sentinel.shape[0] < sentinel.shape[-1]:  # CHW format
+        if sentinel.shape[0] < sentinel.shape[-1]:
             # Use first 4 bands: RGB + NIR (Sentinel-2 bands 4,3,2,8)
             sentinel = np.moveaxis(sentinel[:4], 0, -1)
 
-        # Resize labels to match sentinel dimensions if needed
+        # Resize labels to match sentinel dimensions
         if labels.shape[1:] != sentinel.shape[:2]:
             from skimage.transform import resize
             labels_resized = resize(
@@ -157,7 +147,7 @@ class ModelTrainer:
         else:
             labels_resized = labels[0] if len(labels.shape) == 3 else labels
 
-        # Calculate number of patches with stride (overlapping)
+        # Calculate number of patches with stride
         height, width = sentinel.shape[0], sentinel.shape[1]
         num_patches_height = (height - patch_size) // stride + 1
         num_patches_width = (width - patch_size) // stride + 1
@@ -176,7 +166,6 @@ class ModelTrainer:
                 col_start = j * stride
                 col_end = col_start + patch_size
 
-                # Ensure we don't go out of bounds
                 if row_end > height or col_end > width:
                     continue
 
@@ -388,17 +377,16 @@ class ModelTrainer:
         print(f"\n{'='*70}")
         print("MODEL SAVED SUCCESSFULLY!")
         print(f"{'='*70}")
-        print(f"📁 Location: {output_path.absolute()}")
-        print(f"📊 File size: {file_size_mb:.2f} MB")
-        print(f"🎯 Accuracy: {model_data['accuracy']:.4f}")
-        print(f"📅 Trained on: {model_data['trained_on']}")
+        print(f"Location: {output_path.absolute()}")
+        print(f"File size: {file_size_mb:.2f} MB")
+        print(f"Accuracy: {model_data['accuracy']:.4f}")
         print(f"{'='*70}\n")
 
 
 def main():
     """Main training pipeline"""
     print("\n" + "="*70)
-    print("HEALTHCARE FACILITY FINDER - MODEL TRAINING")
+    print("HEALTHACCESS - MODEL TRAINING")
     print("="*70 + "\n")
 
     # Initialize trainer

@@ -27,6 +27,7 @@ wheels/
 models/*.pkl
 models/*.h5
 models/*.pt
+ml-venv/
 
 # Credentials
 credentials/

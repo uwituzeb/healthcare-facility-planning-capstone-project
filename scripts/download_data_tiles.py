@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """
-Download Sentinel-2 and WorldCover data in tiles (stays under 50MB limit)
-
 This script downloads data for Rwanda by splitting it into smaller tiles,
 then merges them into final sentinel.tif and labels.tif files.
 """
@@ -17,27 +15,20 @@ from rasterio.merge import merge
 def initialize_ee():
     """Initialize Earth Engine with better error handling"""
     try:
-        # Try project-based initialization first (recommended)
-        # Replace 'rwanda-health-planning' with your actual project ID if different
         ee.Initialize(project='rwanda-health-planning')
         print("✓ Earth Engine initialized")
         return True
     except Exception as e:
-        # If that fails, try without project (legacy mode)
         try:
             ee.Initialize()
             print("✓ Earth Engine initialized (legacy mode)")
             return True
         except Exception as e2:
-            print(f"❌ Earth Engine initialization failed.")
+            print(f"Earth Engine initialization failed.")
             print(f"\nError details: {str(e)}")
             print("\nTry one of these solutions:")
             print("\n1. Re-authenticate with your project:")
             print("   python -c 'import ee; ee.Authenticate()'")
-            print("   → Make sure to select or create a Cloud Project when prompted")
-            print("\n2. Check your project ID:")
-            print("   → Visit https://console.cloud.google.com/")
-            print("   → Copy your project ID and update it in initialize_ee()")
             return False
 
 
@@ -183,7 +174,7 @@ def download_rwanda_data():
         result = download_tile(sentinel_median, tile_geom, tile_path, f"Sentinel tile {i}")
         if result:
             sentinel_tiles.append(tile_path)
-        time.sleep(0.5)  # Reduced sleep time for faster downloads
+        time.sleep(0.5)
 
     # Download WorldCover tiles
     print("\nDownloading WorldCover tiles...")
@@ -196,7 +187,7 @@ def download_rwanda_data():
         result = download_tile(worldcover, tile_geom, tile_path, f"WorldCover tile {i}")
         if result:
             worldcover_tiles.append(tile_path)
-        time.sleep(0.5)  # Reduced sleep time for faster downloads
+        time.sleep(0.5)
 
     print("\n" + "="*70)
     print("MERGING TILES")

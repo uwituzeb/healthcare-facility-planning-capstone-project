@@ -1,5 +1,5 @@
 """
-Healthcare Facility Finder - ML Prediction Service
+HealthAccess - ML Prediction Service
 
 FastAPI microservice for Random Forest predictions on satellite imagery.
 Detects healthcare facilities and built-up areas from Sentinel-2 data.
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Healthcare Facility Finder ML Service",
+    title="HealthAccess ML Service",
     description="ML prediction service for healthcare facility detection from satellite imagery",
     version="1.0.0"
 )
@@ -330,7 +330,7 @@ async def predict_batch(
 async def root():
     """Root endpoint with service information"""
     return {
-        "service": "Healthcare Facility Finder ML Service",
+        "service": "HealthAccess ML Service",
         "version": "1.0.0",
         "status": "running",
         "endpoints": {

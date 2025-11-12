@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Check if ML is enabled
 const ML_ENABLED = process.env.ML_ENABLED === "true";
-const USE_ML_FOR_RECOMMENDATIONS = process.env.USE_ML_FOR_RECOMMENDATIONS !== "false"; // Default to true if ML is enabled
+const USE_ML_FOR_RECOMMENDATIONS = process.env.USE_ML_FOR_RECOMMENDATIONS !== "false";
 
 router.post("/", async (req, res) => {
   try {
@@ -57,7 +57,6 @@ router.post("/", async (req, res) => {
         }
       }
     } else {
-      // ML disabled or not preferred - use LLM only
       console.log("Using LLM-based recommendations...");
       recommendationResponse = await getRecommendation(analysis);
       recommendationMethod = "llm";

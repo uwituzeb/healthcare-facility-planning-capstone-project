@@ -22,10 +22,8 @@ except Exception as e:
     model = None
     scaler = None
 
-# Mock data (replace with actual database queries)
 def get_accessibility_data():
     """Get accessibility analysis data"""
-    # This should query your actual database or cached analysis results
     return {
         "districts": [
             {"name": "Kigali - Gasabo District", "accessibility_score": 0.89, "priority": "Low"},
@@ -75,9 +73,6 @@ def analyze_region():
         data = request.get_json()
         region_name = data.get('region')
         
-        # Here you would process satellite imagery for the region
-        # and run ML predictions
-        
         return jsonify({
             "region": region_name,
             "accessibility_score": 0.65,
@@ -121,8 +116,6 @@ def upload_satellite():
             return jsonify({"error": "No file provided"}), 400
         
         file = request.files['file']
-        # Process the satellite imagery here
-        # Run ML predictions
         
         return jsonify({
             "message": "Image processed successfully",
